@@ -15,7 +15,8 @@ import * as THREE from 'three';
 
 export class DashboardComponent {
     @ViewChild('webcam') webcam;   
-
+    private currentImage = null;
+    private oldImage = null;
     constructor(private router: Router, private http: Http, private speech: SpeechRecognitionService, private webService: WebCamCapture) { }
 
     /*
@@ -31,7 +32,7 @@ export class DashboardComponent {
 			rendering = true;
 
 			this.render();
-            
+
             this.speech.record('en_US')
             .subscribe(e => console.log(e));
     }
@@ -39,9 +40,6 @@ export class DashboardComponent {
     render() {
         var width = 64;
         var height = 48;      
-
-        var currentImage = null;
-        var oldImage = null;
 
         var topLeft = [Infinity,Infinity];
         var bottomRight = [0,0];
@@ -53,14 +51,16 @@ export class DashboardComponent {
             };
         })();
 
-        oldImage = currentImage;
-        currentImage = this.webService.captureImage(false);
-
-        if(!oldImage || !currentImage) {
+        this.oldImage = this.currentImage;
+        this.currentImage = this.webService.captureImage(false);
+        
+        if(!this.oldImage || !this.currentImage) {
+            this.render();
             return;
         }
 
-        var vals = new ImageCompare().compare(currentImage, oldImage, width, height);
+        var vals = new ImageCompare().compare(this.currentImage, this.oldImage, width, height);
+        
 
         topLeft[0] = vals.topLeft[0] * 10;
         topLeft[1] = vals.topLeft[1] * 10;
@@ -75,6 +75,6 @@ export class DashboardComponent {
         document.getElementById('movement').style.height = (bottomRight[1] - topLeft[1]) + 'px';
 
         topLeft = [Infinity,Infinity];
-        bottomRight = [0,0]
+        bottomRight = [0,0];
     }
 }
