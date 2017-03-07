@@ -17,12 +17,16 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 /* Service Imports */
 import { SpeechRecognitionService } from './services/speechRecognition.service';
+import { WebCamCapture } from './services/webCam.service';
+import { ImageCompare } from './services/imageCompare.service';
 
 /* Pipe imports */
 
 @NgModule({
     providers: [
-        SpeechRecognitionService
+        SpeechRecognitionService,
+        WebCamCapture,
+        ImageCompare
     ],
     imports: [
         BrowserModule,

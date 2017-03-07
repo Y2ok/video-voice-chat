@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^7.0.5",
+    "@types/three": "^0.83.5",
     "angular2-template-loader": "0.6.0",
     "html-webpack-plugin": "^2.24.1",
     "raw-loader": "0.5.1",
