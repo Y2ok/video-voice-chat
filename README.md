@@ -5,3 +5,7 @@ Speak and clap hands, to send message.
 npm install typings -g
 npm install
 npm run serve
+
+go to localhost:8080 and open console
+
+Say something...
