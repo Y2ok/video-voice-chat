@@ -17,21 +17,22 @@ export class DashboardComponent {
     @ViewChild('webcam') webcam;   
     private currentImage = null;
     private oldImage = null;
+    private rendering = false;
     constructor(private router: Router, private http: Http, private speech: SpeechRecognitionService, private webService: WebCamCapture) { }
 
     /*
     ** On Init function, which makes sure that all required prerequisites are done
     */
     ngOnInit() {
-            var rendering = false;
+            this.rendering = false;
 
             var webCam = null;
             var imageCompare = null;
 
 			webCam = this.webService.initialize(this.webcam.nativeElement);
-			rendering = true;
+			this.rendering = true;
 
-			this.render();
+			this.main();
 
             this.speech.record('en_US')
             .subscribe(e => console.log(e));
@@ -44,21 +45,12 @@ export class DashboardComponent {
         var topLeft = [Infinity,Infinity];
         var bottomRight = [0,0];
 
-        var raf = (function(){
-            return  window.requestAnimationFrame || window.webkitRequestAnimationFrame ||
-            function( callback ){
-                window.setTimeout(callback, 1000/60);
-            };
-        })();
-
         this.oldImage = this.currentImage;
         this.currentImage = this.webService.captureImage(false);
         
         if(!this.oldImage || !this.currentImage) {
-            this.render();
             return;
         }
-
         var vals = new ImageCompare().compare(this.currentImage, this.oldImage, width, height);
         
 
@@ -76,5 +68,22 @@ export class DashboardComponent {
 
         topLeft = [Infinity,Infinity];
         bottomRight = [0,0];
+    }
+
+    main() {
+        try{
+            this.render();
+        }
+        catch(e) {
+            console.log(e);
+            return;
+        }
+        if (this.rendering) {
+            this.raf(this.main.bind(this));
+        }
+    }
+
+    raf(callback) {
+        window.setTimeout(callback, 1000/60);
     }
 }
