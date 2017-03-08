@@ -5,16 +5,19 @@ import { Router } from '@angular/router';
 import { SpeechRecognitionService } from '../../services/speechRecognition.service';
 import { WebCamCapture } from '../../services/webCam.service';
 import { ImageCompare } from '../../services/imageCompare.service';
+import { ChatComponent } from '../../components/chat/chat.component';
 
 import * as THREE from 'three';
 
 @Component({
-    templateUrl: './dashboard.component.html'
+    templateUrl: './dashboard.component.html',
 })
 
 
 export class DashboardComponent {
-    @ViewChild('webcam') webcam;   
+    @ViewChild('webcam') webcam;
+    @ViewChild(ChatComponent) chat;
+
     private currentImage = null;
     private oldImage = null;
     private rendering = false;
@@ -31,28 +34,27 @@ export class DashboardComponent {
 
 			webCam = this.webService.initialize(this.webcam.nativeElement);
 			this.rendering = true;
-
 			this.main();
 
             this.speech.record('en_US')
-            .subscribe(e => console.log(e));
+            .subscribe(e => {this.chat.message = this.chat.message + " " + e;});
     }
 
     render() {
         var width = 64;
-        var height = 48;      
+        var height = 48;
 
         var topLeft = [Infinity,Infinity];
         var bottomRight = [0,0];
 
         this.oldImage = this.currentImage;
         this.currentImage = this.webService.captureImage(false);
-        
+
         if(!this.oldImage || !this.currentImage) {
             return;
         }
         var vals = new ImageCompare().compare(this.currentImage, this.oldImage, width, height);
-        
+
 
         topLeft[0] = vals.topLeft[0] * 10;
         topLeft[1] = vals.topLeft[1] * 10;
@@ -81,6 +83,7 @@ export class DashboardComponent {
         if (this.rendering) {
             this.raf(this.main.bind(this));
         }
+
     }
 
     raf(callback) {

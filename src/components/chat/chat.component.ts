@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-
+import { Component,Directive } from '@angular/core';
 
 @Component({
     selector: 'chatbox',
-    templateUrl: 'src/components/chat/chat.component.html'
+    templateUrl: 'src/components/chat/chat.component.html',
 })
 export class ChatComponent {
-    construcotr() { }
+    private message: String;
+    construcotr() {}
 }
