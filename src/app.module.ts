@@ -11,6 +11,7 @@ import { routing } from './app.routes';
 /* Component imports */
 import { AppComponent } from './components/app/app.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 /* Page Imports */
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -37,7 +38,8 @@ import { ImageCompare } from './services/imageCompare.service';
     declarations: [
         AppComponent,
         NavigationComponent,
-        DashboardComponent
+        DashboardComponent,
+        ChatComponent
     ],
     bootstrap: [
         AppComponent
