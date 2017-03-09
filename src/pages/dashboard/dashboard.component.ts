@@ -10,7 +10,7 @@ import { ChatComponent } from '../../components/chat/chat.component';
 import * as THREE from 'three';
 
 @Component({
-    templateUrl: './dashboard.component.html',
+    templateUrl: 'dashboard.component.html',
 })
 
 
