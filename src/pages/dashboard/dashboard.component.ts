@@ -48,7 +48,11 @@ export class DashboardComponent {
             this.listening = 'Stop Listening';
             this.speech.record('en-US')
             .subscribe(message => {
-                this.chat.message = this.chat.message + " " + message;
+                if (message === undefined) {
+                    this.chat.message = "";
+                } else {
+                    this.chat.message = message;
+                }
             });
         } else {
             this.speech.stop();
