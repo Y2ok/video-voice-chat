@@ -9,20 +9,24 @@ interface IWindow extends Window {
 export class SpeechRecognitionService {
 
     constructor(private zone: NgZone) { }
-
+    private recognition: any;
     record(language: string): Observable<string> {
         return Observable.create(observer => {
             const { webkitSpeechRecognition }: IWindow = <IWindow>window;
-            const recognition = new webkitSpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
+            this.recognition = new webkitSpeechRecognition();
+            this.recognition.continuous = true;
+            this.recognition.interimResults = true;
 
-            recognition.onresult = e => this.zone.run(() => observer.next(e.results.item(e.results.length - 1).item(0).transcript));
-            recognition.onerror = e => observer.error(e);
-            recognition.onend = () => observer.complete();
-            recognition.lang = language;
-            recognition.start();
+            this.recognition.onresult = e => this.zone.run(() => observer.next(e.results.item(e.results.length - 1).item(0).transcript));
+            this.recognition.onerror = e => observer.error(e);
+            this.recognition.onend = () => observer.complete();
+            this.recognition.lang = language;
+            this.recognition.start();
         });
+    }
+
+    stop() {
+        this.recognition.stop();
     }
 
 }

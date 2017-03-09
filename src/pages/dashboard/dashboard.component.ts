@@ -20,6 +20,8 @@ export class DashboardComponent {
 
     private currentImage = null;
     private oldImage = null;
+    public listening: string = 'Start Listening';
+    private listen: boolean = false;
     private rendering = false;
     constructor(private router: Router, private http: Http, private speech: SpeechRecognitionService, private webService: WebCamCapture) { }
 
@@ -35,9 +37,23 @@ export class DashboardComponent {
 			webCam = this.webService.initialize(this.webcam.nativeElement);
 			this.rendering = true;
 			this.main();
+    }
 
+    /**
+     * On listen function, to toggle listening to microphone on and off.
+     */
+    onListen() {
+        this.listen = !this.listen;
+        if (this.listen) {
+            this.listening = "Stop Listening";
             this.speech.record('en_US')
-            .subscribe(e => {this.chat.message = this.chat.message + " " + e;});
+            .subscribe(message => {
+                this.chat.message = this.chat.message + " " + message;
+            });
+        } else {
+            this.speech.stop();
+            this.listening = 'Start Listening';
+        }
     }
 
     render() {
