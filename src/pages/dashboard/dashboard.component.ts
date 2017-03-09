@@ -45,8 +45,8 @@ export class DashboardComponent {
     onListen() {
         this.listen = !this.listen;
         if (this.listen) {
-            this.listening = "Stop Listening";
-            this.speech.record('en_US')
+            this.listening = 'Stop Listening';
+            this.speech.record('en-US')
             .subscribe(message => {
                 this.chat.message = this.chat.message + " " + message;
             });
