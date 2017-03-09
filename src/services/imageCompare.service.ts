@@ -18,7 +18,7 @@ export class ImageCompare {
      *
      */
     initialize() {
-        this.sensitivity = 40;
+        this.sensitivity = 70;
 
         if (!this.temp1Canvas) {
             this.temp1Canvas = document.createElement('canvas');
