@@ -18,12 +18,21 @@ export class DashboardComponent {
     @ViewChild('webcam') webcam;
     @ViewChild(ChatComponent) chat;
 
+    private moveLength = 9; // Frame count
+    private minIncreasingXCount = 10;
+
     private currentImage = null;
     private oldImage = null;
     public listening: string = 'Start Listening';
     private listen: boolean = false;
     private rendering = false;
     constructor(private router: Router, private http: Http, private speech: SpeechRecognitionService, private webService: WebCamCapture) { }
+
+    private motion: boolean = false;
+    private nonMotionCounter: number = 0;
+    private leftX = [];
+    private rightX = [];
+
 
     /*
     ** On Init function, which makes sure that all required prerequisites are done
@@ -84,9 +93,35 @@ export class DashboardComponent {
 
         document.getElementById('movement').style.top = topLeft[1] + 'px';
         document.getElementById('movement').style.left = topLeft[0] + 'px';
-
         document.getElementById('movement').style.width = (bottomRight[0] - topLeft[0]) + 'px';
         document.getElementById('movement').style.height = (bottomRight[1] - topLeft[1]) + 'px';
+
+
+        if (topLeft[0] == Infinity || bottomRight[0] == 0){
+            this.nonMotionCounter++;
+            if(this.nonMotionCounter > 3){
+              this.leftX = [];
+              this.rightX = [];
+              console.log("No move detected in more than 3 frames, resetting X arrays");
+            }
+        } else {
+          this.leftX.push(topLeft[0]);
+          this.rightX.push(bottomRight[0]);
+          this.nonMotionCounter = 0;
+          if(this.leftX.length > this.moveLength){
+            console.log("Move complete");
+            var increasingXCount = 0;
+            increasingXCount = this.isMoveRight(this.leftX);
+            increasingXCount = increasingXCount + this.isMoveRight(this.rightX);
+            if(increasingXCount > this.minIncreasingXCount){
+              console.log("Swipe Right Detected");
+            } else {
+              console.log("Swipe Right Not Detected");
+            }
+            this.leftX = [];
+            this.rightX = [];
+          }
+        }
 
         topLeft = [Infinity,Infinity];
         bottomRight = [0,0];
@@ -108,5 +143,15 @@ export class DashboardComponent {
 
     raf(callback) {
         window.setTimeout(callback, 1000/60);
+    }
+
+    isMoveRight(coordinates){
+      var count = 0;
+      for (var x = 0; x < coordinates.length-1; x++) {
+        if(coordinates[x] < coordinates[x+1]){
+          count++;
+        }
+      }
+      return count;
     }
 }
