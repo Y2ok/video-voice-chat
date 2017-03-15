@@ -114,6 +114,7 @@ export class DashboardComponent {
               console.log("Swipe Right Detected");
             } else if (xLeftCount > this.minSwipeCount){
               console.log("Swipe Left Detected");
+              this.deleteLastWork();
             } else {
               console.log("Unknown move");
             }
@@ -144,7 +145,7 @@ export class DashboardComponent {
         window.setTimeout(callback, 1000/60);
     }
 
-    isSwipeRight(coordinates1, coordinates2){
+    isSwipeLeft(coordinates1, coordinates2){
       var count = 0;
       for (var x = 0; x < coordinates1.length-1; x++) {
         if(coordinates1[x] < coordinates1[x+1]){
@@ -159,7 +160,7 @@ export class DashboardComponent {
       return count;
     }
 
-    isSwipeLeft(coordinates1, coordinates2){
+    isSwipeRight(coordinates1, coordinates2){
       var count = 0;
       for (var x = 0; x < coordinates1.length-1; x++) {
         if(coordinates1[x] > coordinates1[x+1]){
@@ -172,5 +173,12 @@ export class DashboardComponent {
         }
       }
       return count;
+    }
+
+    deleteLastWork(){
+        if(typeof this.chat.message !== "undefined" && this.chat.message) {
+        var lastIndex = this.chat.message.lastIndexOf(" ");
+        this.chat.message = this.chat.message.substring(0, lastIndex);
+      }
     }
 }
