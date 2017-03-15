@@ -7,4 +7,8 @@ import { Component,Directive } from '@angular/core';
 export class ChatComponent {
     private message: String;
     construcotr() {}
+
+    onSend(){
+      console.log("Send button pressed");
+    }
 }

@@ -112,6 +112,7 @@ export class DashboardComponent {
             var xLeftCount = this.isSwipeLeft(this.leftX,this.rightX);
             if(xRightCount > this.minSwipeCount){
               console.log("Swipe Right Detected");
+              this.chat.onSend();
             } else if (xLeftCount > this.minSwipeCount){
               console.log("Swipe Left Detected");
               this.deleteLastWork();
