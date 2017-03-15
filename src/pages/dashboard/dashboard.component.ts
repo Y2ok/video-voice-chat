@@ -19,7 +19,7 @@ export class DashboardComponent {
     @ViewChild(ChatComponent) chat;
 
     private moveLength = 9; // Frame count
-    private minIncreasingXCount = 10;
+    private minSwipeCount = 10;
 
     private currentImage = null;
     private oldImage = null;
@@ -102,21 +102,20 @@ export class DashboardComponent {
             if(this.nonMotionCounter > 3){
               this.leftX = [];
               this.rightX = [];
-              console.log("No move detected in more than 3 frames, resetting X arrays");
             }
         } else {
           this.leftX.push(topLeft[0]);
           this.rightX.push(bottomRight[0]);
           this.nonMotionCounter = 0;
           if(this.leftX.length > this.moveLength){
-            console.log("Move complete");
-            var increasingXCount = 0;
-            increasingXCount = this.isMoveRight(this.leftX);
-            increasingXCount = increasingXCount + this.isMoveRight(this.rightX);
-            if(increasingXCount > this.minIncreasingXCount){
+            var xRightCount = this.isSwipeRight(this.leftX,this.rightX);
+            var xLeftCount = this.isSwipeLeft(this.leftX,this.rightX);
+            if(xRightCount > this.minSwipeCount){
               console.log("Swipe Right Detected");
+            } else if (xLeftCount > this.minSwipeCount){
+              console.log("Swipe Left Detected");
             } else {
-              console.log("Swipe Right Not Detected");
+              console.log("Unknown move");
             }
             this.leftX = [];
             this.rightX = [];
@@ -145,10 +144,30 @@ export class DashboardComponent {
         window.setTimeout(callback, 1000/60);
     }
 
-    isMoveRight(coordinates){
+    isSwipeRight(coordinates1, coordinates2){
       var count = 0;
-      for (var x = 0; x < coordinates.length-1; x++) {
-        if(coordinates[x] < coordinates[x+1]){
+      for (var x = 0; x < coordinates1.length-1; x++) {
+        if(coordinates1[x] < coordinates1[x+1]){
+          count++;
+        }
+      }
+      for (var x = 0; x < coordinates2.length-1; x++) {
+        if(coordinates2[x] < coordinates2[x+1]){
+          count++;
+        }
+      }
+      return count;
+    }
+
+    isSwipeLeft(coordinates1, coordinates2){
+      var count = 0;
+      for (var x = 0; x < coordinates1.length-1; x++) {
+        if(coordinates1[x] > coordinates1[x+1]){
+          count++;
+        }
+      }
+      for (var x = 0; x < coordinates2.length-1; x++) {
+        if(coordinates2[x] > coordinates2[x+1]){
           count++;
         }
       }
