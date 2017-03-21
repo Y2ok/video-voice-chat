@@ -6,9 +6,18 @@ import { Component,Directive } from '@angular/core';
 })
 export class ChatComponent {
     private message: String;
+    public chatMessages: any[] = [];
     construcotr() {}
 
+    /**
+     * Send spoken chat message to message box.
+     */
     onSend(){
-      console.log("Send button pressed");
+        this.chatMessages.push({
+            message: this.message,
+            date: new Date(),
+            author: 'User 1'
+        });
+        this.message = '';
     }
 }

@@ -38,14 +38,14 @@ export class DashboardComponent {
     ** On Init function, which makes sure that all required prerequisites are done
     */
     ngOnInit() {
-            this.rendering = false;
+        this.rendering = false;
 
-            var webCam = null;
-            var imageCompare = null;
+        var webCam = null;
+        var imageCompare = null;
 
-			webCam = this.webService.initialize(this.webcam.nativeElement);
-			this.rendering = true;
-			this.main();
+        webCam = this.webService.initialize(this.webcam.nativeElement);
+        this.rendering = true;
+        this.main();
     }
 
     /**
@@ -56,13 +56,13 @@ export class DashboardComponent {
         if (this.listen) {
             this.listening = 'Stop Listening';
             this.speech.record('en-US')
-            .subscribe(message => {
-                if (message === undefined) {
-                    this.chat.message = "";
-                } else {
-                    this.chat.message = message;
-                }
-            });
+                .subscribe(message => {
+                    if (message === undefined) {
+                        this.chat.message = "";
+                    } else {
+                        this.chat.message = message;
+                    }
+                });
         } else {
             this.speech.stop();
             this.listening = 'Start Listening';
@@ -73,13 +73,13 @@ export class DashboardComponent {
         var width = 64;
         var height = 48;
 
-        var topLeft = [Infinity,Infinity];
-        var bottomRight = [0,0];
+        var topLeft = [Infinity, Infinity];
+        var bottomRight = [0, 0];
 
         this.oldImage = this.currentImage;
         this.currentImage = this.webService.captureImage(false);
 
-        if(!this.oldImage || !this.currentImage) {
+        if (!this.oldImage || !this.currentImage) {
             return;
         }
         var vals = new ImageCompare().compare(this.currentImage, this.oldImage, width, height);
@@ -97,42 +97,44 @@ export class DashboardComponent {
         document.getElementById('movement').style.height = (bottomRight[1] - topLeft[1]) + 'px';
 
 
-        if (topLeft[0] == Infinity || bottomRight[0] == 0){
+        if (topLeft[0] == Infinity || bottomRight[0] == 0) {
             this.nonMotionCounter++;
-            if(this.nonMotionCounter > 3){
-              this.leftX = [];
-              this.rightX = [];
+            if (this.nonMotionCounter > 3) {
+                this.leftX = [];
+                this.rightX = [];
             }
         } else {
-          this.leftX.push(topLeft[0]);
-          this.rightX.push(bottomRight[0]);
-          this.nonMotionCounter = 0;
-          if(this.leftX.length > this.moveLength){
-            var xRightCount = this.isSwipeRight(this.leftX,this.rightX);
-            var xLeftCount = this.isSwipeLeft(this.leftX,this.rightX);
-            if(xRightCount > this.minSwipeCount){
-              console.log("Swipe Right Detected");
-              this.chat.onSend();
-            } else if (xLeftCount > this.minSwipeCount){
-              console.log("Swipe Left Detected");
-              this.deleteLastWork();
-            } else {
-              console.log("Unknown move");
+            this.leftX.push(topLeft[0]);
+            this.rightX.push(bottomRight[0]);
+            this.nonMotionCounter = 0;
+            if (this.leftX.length > this.moveLength) {
+                var xRightCount = this.isSwipeRight(this.leftX, this.rightX);
+                var xLeftCount = this.isSwipeLeft(this.leftX, this.rightX);
+                if (xRightCount > this.minSwipeCount) {
+                    console.log("Swipe Right Detected");
+                    this.speech.stop();
+                    this.listening = 'Start Listening';
+                    this.chat.onSend();
+                } else if (xLeftCount > this.minSwipeCount) {
+                    console.log("Swipe Left Detected");
+                    this.deleteLastWork();
+                } else {
+                    console.log("Unknown move");
+                }
+                this.leftX = [];
+                this.rightX = [];
             }
-            this.leftX = [];
-            this.rightX = [];
-          }
         }
 
-        topLeft = [Infinity,Infinity];
-        bottomRight = [0,0];
+        topLeft = [Infinity, Infinity];
+        bottomRight = [0, 0];
     }
 
     main() {
-        try{
+        try {
             this.render();
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             return;
         }
@@ -143,43 +145,43 @@ export class DashboardComponent {
     }
 
     raf(callback) {
-        window.setTimeout(callback, 1000/60);
+        window.setTimeout(callback, 1000 / 60);
     }
 
-    isSwipeLeft(coordinates1, coordinates2){
-      var count = 0;
-      for (var x = 0; x < coordinates1.length-1; x++) {
-        if(coordinates1[x] < coordinates1[x+1]){
-          count++;
+    isSwipeLeft(coordinates1, coordinates2) {
+        var count = 0;
+        for (var x = 0; x < coordinates1.length - 1; x++) {
+            if (coordinates1[x] < coordinates1[x + 1]) {
+                count++;
+            }
         }
-      }
-      for (var x = 0; x < coordinates2.length-1; x++) {
-        if(coordinates2[x] < coordinates2[x+1]){
-          count++;
+        for (var x = 0; x < coordinates2.length - 1; x++) {
+            if (coordinates2[x] < coordinates2[x + 1]) {
+                count++;
+            }
         }
-      }
-      return count;
+        return count;
     }
 
-    isSwipeRight(coordinates1, coordinates2){
-      var count = 0;
-      for (var x = 0; x < coordinates1.length-1; x++) {
-        if(coordinates1[x] > coordinates1[x+1]){
-          count++;
+    isSwipeRight(coordinates1, coordinates2) {
+        var count = 0;
+        for (var x = 0; x < coordinates1.length - 1; x++) {
+            if (coordinates1[x] > coordinates1[x + 1]) {
+                count++;
+            }
         }
-      }
-      for (var x = 0; x < coordinates2.length-1; x++) {
-        if(coordinates2[x] > coordinates2[x+1]){
-          count++;
+        for (var x = 0; x < coordinates2.length - 1; x++) {
+            if (coordinates2[x] > coordinates2[x + 1]) {
+                count++;
+            }
         }
-      }
-      return count;
+        return count;
     }
 
-    deleteLastWork(){
-        if(typeof this.chat.message !== "undefined" && this.chat.message) {
-        var lastIndex = this.chat.message.lastIndexOf(" ");
-        this.chat.message = this.chat.message.substring(0, lastIndex);
-      }
+    deleteLastWork() {
+        if (typeof this.chat.message !== "undefined" && this.chat.message) {
+            var lastIndex = this.chat.message.lastIndexOf(" ");
+            this.chat.message = this.chat.message.substring(0, lastIndex);
+        }
     }
 }
