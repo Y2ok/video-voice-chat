@@ -37,7 +37,7 @@ export class DashboardComponent {
     /*
     ** On Init function, which makes sure that all required prerequisites are done
     */
-    ngOnInit() {
+    ngOnInit() {  
         this.rendering = false;
 
         var webCam = null;
@@ -111,12 +111,11 @@ export class DashboardComponent {
                 var xRightCount = this.isSwipeRight(this.leftX, this.rightX);
                 var xLeftCount = this.isSwipeLeft(this.leftX, this.rightX);
                 if (xRightCount > this.minSwipeCount) {
-                    console.log("Swipe Right Detected");
-                    this.speech.stop();
-                    this.listening = 'Start Listening';
-                    this.chat.onSend();
+                    if (this.listen) {
+                        this.onListen();
+                        this.chat.onSend();
+                    }
                 } else if (xLeftCount > this.minSwipeCount) {
-                    console.log("Swipe Left Detected");
                     this.deleteLastWork();
                 } else {
                     console.log("Unknown move");
