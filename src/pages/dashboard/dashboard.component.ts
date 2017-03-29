@@ -7,6 +7,8 @@ import { WebCamCapture } from '../../services/webCam.service';
 import { ImageCompare } from '../../services/imageCompare.service';
 import { ChatComponent } from '../../components/chat/chat.component';
 
+import { Toast, ToasterConfig, ToasterService } from 'angular2-toaster';
+
 import * as THREE from 'three';
 
 @Component({
@@ -26,13 +28,16 @@ export class DashboardComponent {
     public listening: string = 'Start Listening';
     private listen: boolean = false;
     private rendering = false;
-    constructor(private router: Router, private http: Http, private speech: SpeechRecognitionService, private webService: WebCamCapture) { }
+    constructor(private router: Router, private http: Http, private speech: SpeechRecognitionService, private webService: WebCamCapture, private toasterService: ToasterService) { }
 
     private motion: boolean = false;
     private nonMotionCounter: number = 0;
     private leftX = [];
     private rightX = [];
 
+    private toasterConfig = new ToasterConfig({
+        timeout: 2000
+    });
 
     /*
     ** On Init function, which makes sure that all required prerequisites are done
@@ -112,13 +117,15 @@ export class DashboardComponent {
                 var xLeftCount = this.isSwipeLeft(this.leftX, this.rightX);
                 if (xRightCount > this.minSwipeCount) {
                     if (this.listen) {
+                        this.toasterService.pop('success', 'Send message', 'Message was sent successfully.')
                         this.onListen();
                         this.chat.onSend();
                     }
                 } else if (xLeftCount > this.minSwipeCount) {
+                    this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.')
                     this.deleteLastWork();
                 } else {
-                    console.log("Unknown move");
+                    this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.')
                 }
                 this.leftX = [];
                 this.rightX = [];

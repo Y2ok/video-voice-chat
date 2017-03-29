@@ -7,6 +7,7 @@ import { HttpModule } from '@angular/http';
 import { routing } from './app.routes';
 
 /* Import modules */
+import { ToasterModule } from 'angular2-toaster';
 
 /* Component imports */
 import { AppComponent } from './components/app/app.component';
@@ -33,6 +34,7 @@ import { ImageCompare } from './services/imageCompare.service';
         BrowserModule,
         routing,
         FormsModule,
+        ToasterModule,
         HttpModule
     ],
     declarations: [
