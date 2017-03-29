@@ -34,6 +34,8 @@ export class DashboardComponent {
     private nonMotionCounter: number = 0;
     private leftX = [];
     private rightX = [];
+    private topY = [];
+    private bottomY = [];
 
     private toasterConfig = new ToasterConfig({
         timeout: 2000
@@ -42,7 +44,7 @@ export class DashboardComponent {
     /*
     ** On Init function, which makes sure that all required prerequisites are done
     */
-    ngOnInit() {  
+    ngOnInit() {
         this.rendering = false;
 
         var webCam = null;
@@ -107,14 +109,19 @@ export class DashboardComponent {
             if (this.nonMotionCounter > 3) {
                 this.leftX = [];
                 this.rightX = [];
+                this.topY = [];
+                this.bottomY = [];
             }
         } else {
             this.leftX.push(topLeft[0]);
             this.rightX.push(bottomRight[0]);
+            this.topY.push(topLeft[1]);
+            this.bottomY.push(bottomRight[1]);
             this.nonMotionCounter = 0;
             if (this.leftX.length > this.moveLength) {
                 var xRightCount = this.isSwipeRight(this.leftX, this.rightX);
                 var xLeftCount = this.isSwipeLeft(this.leftX, this.rightX);
+                var yUpCount = this.isSwipeUp(this.topY,this.bottomY);
                 if (xRightCount > this.minSwipeCount) {
                     if (this.listen) {
                         this.toasterService.pop('success', 'Send message', 'Message was sent successfully.')
@@ -124,6 +131,8 @@ export class DashboardComponent {
                 } else if (xLeftCount > this.minSwipeCount) {
                     this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.')
                     this.deleteLastWork();
+                } else if (yUpCount > this.minSwipeCount){
+                  this.toasterService.pop('success', 'Do something', 'Swipe up muthafucka')
                 } else {
                     this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.')
                 }
@@ -152,6 +161,21 @@ export class DashboardComponent {
 
     raf(callback) {
         window.setTimeout(callback, 1000 / 60);
+    }
+
+    isSwipeUp(coordinates1, coordinates2){
+      var count = 0;
+      for (var x = 0; x < coordinates1.length - 1; x++) {
+          if (coordinates1[x] < coordinates1[x + 1]) {
+              count++;
+          }
+      }
+      for (var x = 0; x < coordinates2.length - 1; x++) {
+          if (coordinates2[x] < coordinates2[x + 1]) {
+              count++;
+          }
+      }
+      return count;
     }
 
     isSwipeLeft(coordinates1, coordinates2) {
