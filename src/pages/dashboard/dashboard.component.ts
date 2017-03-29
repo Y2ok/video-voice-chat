@@ -121,9 +121,9 @@ export class DashboardComponent {
             this.bottomY.push(bottomRight[1]);
             this.nonMotionCounter = 0;
             if (this.leftX.length > this.moveLength) {
-                var xRightCount = this.isSwipeRight(this.leftX, this.rightX);
-                var xLeftCount = this.isSwipeLeft(this.leftX, this.rightX);
-                var yUpCount = this.isSwipeUp(this.topY,this.bottomY);
+                var xRightCount = this.isCoordinatesDecreasing(this.leftX, this.rightX);
+                var xLeftCount = this.isCoordinatesIncreasing(this.leftX, this.rightX);
+                var yUpCount = this.isCoordinatesDecreasing(this.topY,this.bottomY);
                 if (xRightCount > this.minSwipeCount) {
                     if (this.listen) {
                         this.onListen();
@@ -133,7 +133,10 @@ export class DashboardComponent {
                     this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.');
                     this.deleteLastWork();
                 } else if (yUpCount > this.minSwipeCount){
-                  this.toasterService.pop('success', 'Do something', 'Swipe up muthafucka')
+                  this.toasterService.pop('success', 'Listening', 'Talk to type a message.')
+                  if(!this.listen){
+                    this.onListen();
+                  }
                 } else {
                     this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.');
                 }
@@ -164,22 +167,8 @@ export class DashboardComponent {
         window.setTimeout(callback, 1000 / 60);
     }
 
-    isSwipeUp(coordinates1, coordinates2){
-      var count = 0;
-      for (var x = 0; x < coordinates1.length - 1; x++) {
-          if (coordinates1[x] < coordinates1[x + 1]) {
-              count++;
-          }
-      }
-      for (var x = 0; x < coordinates2.length - 1; x++) {
-          if (coordinates2[x] < coordinates2[x + 1]) {
-              count++;
-          }
-      }
-      return count;
-    }
 
-    isSwipeLeft(coordinates1, coordinates2) {
+    isCoordinatesIncreasing(coordinates1, coordinates2) {
         var count = 0;
         for (var x = 0; x < coordinates1.length - 1; x++) {
             if (coordinates1[x] < coordinates1[x + 1]) {
@@ -194,7 +183,7 @@ export class DashboardComponent {
         return count;
     }
 
-    isSwipeRight(coordinates1, coordinates2) {
+    isCoordinatesDecreasing(coordinates1, coordinates2) {
         var count = 0;
         for (var x = 0; x < coordinates1.length - 1; x++) {
             if (coordinates1[x] > coordinates1[x + 1]) {
