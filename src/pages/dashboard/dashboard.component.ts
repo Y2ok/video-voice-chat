@@ -59,6 +59,7 @@ export class DashboardComponent {
     onListen() {
         this.listen = !this.listen;
         if (this.listen) {
+            this.toasterService.pop('success', 'Start speaking', 'Start speaking, we are listening.');
             this.listening = 'Stop Listening';
             this.speech.record('en-US')
                 .subscribe(message => {
@@ -69,6 +70,7 @@ export class DashboardComponent {
                     }
                 });
         } else {
+            this.toasterService.pop('success', 'Send message', 'Message was sent successfully.');
             this.speech.stop();
             this.listening = 'Start Listening';
         }
@@ -117,15 +119,14 @@ export class DashboardComponent {
                 var xLeftCount = this.isSwipeLeft(this.leftX, this.rightX);
                 if (xRightCount > this.minSwipeCount) {
                     if (this.listen) {
-                        this.toasterService.pop('success', 'Send message', 'Message was sent successfully.')
                         this.onListen();
                         this.chat.onSend();
                     }
                 } else if (xLeftCount > this.minSwipeCount) {
-                    this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.')
+                    this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.');
                     this.deleteLastWork();
                 } else {
-                    this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.')
+                    this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.');
                 }
                 this.leftX = [];
                 this.rightX = [];
