@@ -130,15 +130,19 @@ export class DashboardComponent {
                         this.chat.onSend();
                     }
                 } else if (xLeftCount > this.minSwipeCount) {
-                    this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.');
-                    this.deleteLastWork();
-                } else if (yUpCount > this.minSwipeCount){
+                    if(this.listen){
+                      this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.');
+                      this.deleteLastWork();
+                  }
+                } /* else if (yUpCount > this.minSwipeCount){
                   if(!this.listen){
                     this.onListen();
                     this.toasterService.pop('success', 'Listening', 'Talk to type a message.')
                   }
-                } else {
-                    this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.');
+                } */ else {
+                    if(this.listen){
+                      this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.');
+                  }
                 }
                 this.leftX = [];
                 this.rightX = [];
