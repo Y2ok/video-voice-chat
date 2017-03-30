@@ -133,9 +133,9 @@ export class DashboardComponent {
                     this.toasterService.pop('success', 'Delete last word', 'Last word was deleted successfully.');
                     this.deleteLastWork();
                 } else if (yUpCount > this.minSwipeCount){
-                  this.toasterService.pop('success', 'Listening', 'Talk to type a message.')
                   if(!this.listen){
                     this.onListen();
+                    this.toasterService.pop('success', 'Listening', 'Talk to type a message.')
                   }
                 } else {
                     this.toasterService.pop('error', 'Unknown movement', 'Please try again, unknown movement was detected.');
